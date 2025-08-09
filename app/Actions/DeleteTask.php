@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Exceptions\DeleteTaskException;
 use App\Models\Task;
 
 class DeleteTask
@@ -9,7 +10,7 @@ class DeleteTask
     /**
      * Delete a task
      * @param integer $taskId
-     * @throws \Exception
+     * @throws DeleteTaskException
      * @return void
      */
     public function execute(int $taskId): void
@@ -17,7 +18,7 @@ class DeleteTask
         $task = Task::find($taskId);
 
         if (!$task) {
-            throw new \Exception('Такой таск не найден');
+            throw new DeleteTaskException('Такой таск не найден');
         }
 
         $task->delete();
