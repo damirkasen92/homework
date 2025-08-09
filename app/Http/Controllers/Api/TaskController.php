@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class TaskController extends Controller
+{
+    public function list(): JsonResponse
+    {
+        return response()->json([
+            'data' => [
+                'todos' => [
+                    1,
+                    2,
+                    3
+                ]
+            ]
+        ]);
+    }
+}
