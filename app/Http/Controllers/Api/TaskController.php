@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Actions\CreateNewTask;
 use App\Actions\DeleteTask;
 use App\Actions\UpdateOldTask;
+use App\Exceptions\CreateNewTaskException;
+use App\Exceptions\DeleteTaskException;
+use App\Exceptions\UpdateOldTaskException;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
@@ -28,16 +31,14 @@ class TaskController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        //валидация в action, или же сервисы нужны были. Каждый по своему говорит, не знаю какая практика лучше
-        //или отдельный класс для валидации, но вроде бы приложение простое. Эх еще учиться и учиться
         try {
             return response()->json([
                 'message' => 'Таск успешно создан',
                 'data' => (new CreateNewTask())
                     ->execute($request)
-                    ->toArray() // Преобразуем модель в массив, скажем нет неявности))
+                    ->toArray()
             ], 201);
-        } catch (\Exception $e) {
+        } catch (CreateNewTaskException $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 422);
@@ -53,7 +54,7 @@ class TaskController extends Controller
                     ->execute($request, $id)
                     ->toArray()
             ]);
-        } catch (\Exception $e) {
+        } catch (UpdateOldTaskException $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 422);
@@ -64,11 +65,11 @@ class TaskController extends Controller
     {
         try {
             (new DeleteTask())->execute($id);
-            
+
             return response()->json([
                 'message' => 'Таск успешно удалён'
             ]);
-        } catch (\Exception $e) {
+        } catch (DeleteTaskException $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 422);
